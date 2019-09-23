@@ -111,12 +111,15 @@ end
 
 function button_pressed(event)
 	if (event.phase == 'ended') then
-		if (not cooker:isCarryingObject() and areObjectsCloseToEachOther({x = cooker:getX(), y = cooker:getY()}, carnes)) then
+		cookerCoordinates = {x = cooker:getX(), y = cooker:getY()}
+		if (not cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, carnes)) then
 			newMeat = display.newCircle(cooker:getX(), cooker:getY(), 10)
 			newMeat:setFillColor(1, 0, 0)
 			cooker:carryObject(newMeat)
 		else
-			cooker:carryObject(nil)
+			if (cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, mesaCoz)) then
+				cooker:carryObject(nil)
+			end
 		end
 	end
 end
