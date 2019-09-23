@@ -6,7 +6,7 @@ local spaceship_mt = {__index = spaceship};
 
 local spaceshipSprite = {
 	type = "image",
-	filename = "button.png"
+	filename = "cooker.png"
 }
 
 local speed, maxSpeed, currentSpeed;
@@ -37,8 +37,8 @@ function spaceship.new(_x, _y, _acceleration)
 
 	lastAngle = 0;
 	lastMagnitude = 0;
-	width = 154;
-	lenght = 40;
+	width = 128;
+	lenght = 128;
 
 	player = display.newRect( _x, _y, width, lenght )
 	player.fill = spaceshipSprite;
