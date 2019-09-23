@@ -16,7 +16,8 @@ local physics = require "physics"
 --------------------------------------------
 
 -- forward declarations and other locals
-local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX, cooker
+local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
+local cooker, mesaIngr, mesaCoz, mesaLouc, carnes
 
 function scene:create( event )
 
@@ -42,34 +43,28 @@ function scene:create( event )
 	background.anchorY = 0
 	background:setFillColor( .5 )
 
-	-- make a crate (off-screen), position it, and rotate slightly
-	local crate = display.newImageRect( "crate.png", 90, 90 )
-	crate.x, crate.y = 160, -100
-	crate.rotation = 15
+	mesaIngr = display.newRect(display.actualContentWidth - 55, display.actualContentHeight / 2, 20, 100)
 
-	-- add physics to the crate
-	physics.addBody( crate, 'dynamic', { density=1.0, friction=0.3, bounce=0.3 } )
+	mesaCoz = display.newRect(display.actualContentWidth / 2, display.actualContentHeight - 10, 100, 20)
 
-	-- create a grass object and add physics (with custom shape)
-	-- local grass = display.newImageRect( "grass.png", screenW, 82 )
-	-- grass.anchorX = 0
-	-- grass.anchorY = 1
-	--  draw the grass at the very bottom of the screen
-	-- grass.x, grass.y = display.screenOriginX, display.actualContentHeight + display.screenOriginY
+	mesaLouc = display.newRect(0 - 35, display.actualContentHeight / 2, 20, 100)
 
-	-- define a shape that's slightly shorter than image bounds (set draw mode to "hybrid" or "debug" to see)
-	-- local grassShape = { -halfW,-34, halfW,-34, halfW,34, -halfW,34 }
-	-- physics.addBody( grass, "static", { friction=0.3, shape=grassShape } )
+	carnes = display.newCircle(display.actualContentWidth - 55, (display.actualContentHeight / 2) + 30, 10)
+	carnes:setFillColor(1, 0, 0)
 
+	local button = display.newCircle(7 * display.contentWidth / 8, 6 * display.contentHeight / 8, display.contentWidth/15)
 
-	-- all display objects must be inserted into group
-	local stick = joystick.new(1 * display.contentWidth / 8, 6 * display.contentHeight / 8)
+	local stick = joystick.new(display.contentWidth / 8, 6 * display.contentHeight / 8)
 	cooker = spaceship.new(0, 0, 0.01)
 	stick:init()
 	sceneGroup:insert( background )
-	sceneGroup:insert( crate )
+	sceneGroup:insert( mesaIngr )
+	sceneGroup:insert( mesaCoz )
+	sceneGroup:insert( mesaLouc )
 	sceneGroup:insert( cooker:getDisplayObject() )
 	gameloop:init()
+
+	button:addEventListener( "touch", button_pressed );
 end
 
 function runGL()
@@ -90,7 +85,6 @@ function scene:show( event )
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 		physics.start()
-		physics.setGravity( 0, 0 )
 	end
 end
 
@@ -109,6 +103,22 @@ function scene:hide( event )
 		-- Called when the scene is now off screen
 	end
 
+end
+
+function areObjectsCloseToEachOther(leftiest, rightiest)
+	return (rightiest.x - leftiest.x) < 40 and (rightiest.y - leftiest.y) < 40
+end
+
+function button_pressed(event)
+	if (event.phase == 'ended') then
+		if (not cooker:isCarryingObject() and areObjectsCloseToEachOther({x = cooker:getX(), y = cooker:getY()}, carnes)) then
+			newMeat = display.newCircle(cooker:getX(), cooker:getY(), 10)
+			newMeat:setFillColor(1, 0, 0)
+			cooker:carryObject(newMeat)
+		else
+			cooker:carryObject(nil)
+		end
+	end
 end
 
 function scene:destroy( event )

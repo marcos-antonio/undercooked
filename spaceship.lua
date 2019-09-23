@@ -21,13 +21,15 @@ local debug_currentSpeed;
 local debug_bulletNum;
 local debug_spaceshipX, debug_spaceshipY;
 
+local carriedObject;
+
 function spaceship.new(_x, _y, _acceleration)
 	local newSpaceship = {
 		speed = 0;
 	}
 	speed = 0;
 	currentSpeed = 0;
-	maxSpeed = 10;
+	maxSpeed = 5;
 	accelerationRate = _acceleration;
 	shootCooldown = 0;
 	bulletNum = 0;
@@ -56,11 +58,11 @@ function spaceship:getDisplayObject(  )
 end
 
 function spaceship:getX()
-	return player;
+	return player.x;
 end
 
 function spaceship:getY(  )
-	return player;
+	return player.y;
 end
 
 function spaceship:getSpeed(  )
@@ -96,13 +98,30 @@ function spaceship:init(  )
 	physics.setGravity(0, 0)
 end
 
+function spaceship:carryObject(obj)
+	carriedObject = obj
+end
+
+function spaceship:getCarryingObject()
+	return carriedObject
+end
+
+function spaceship:isCarryingObject()
+	return not not carriedObject
+end
+
 function spaceship:translate( _x, _y, _angle )
-	print(player.y + _y)
-	if (not (player.x + _x > display.actualContentWidth - 40 or player.x + _x < -50)) then
+	if (not (player.x + _x > display.actualContentWidth - 40 or player.x + _x < -35)) then
 		player.x = player.x + _x;
+		if (carriedObject) then
+			carriedObject.x = player.x + _x;
+		end
 	end
 	if (not (player.y + _y > display.actualContentHeight or player.y + _y < 0)) then
 		player.y = player.y + _y;
+		if (carriedObject) then
+			carriedObject.y = player.y + _y;
+		end
 	else
 	end
 	player.rotation = _angle

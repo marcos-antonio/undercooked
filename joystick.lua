@@ -77,27 +77,6 @@ local function snapStick( event )
 	end
 end
 
---[[
-  joystick.new
-    - runs once to create a joystick object
-  run
-    - Runs in the game loop
-    - gets user input, and returns angle and magnitude values
-  getAngle
-    -returns the angle of the joystick
-    - Measured in degrees. 0 is up
-  getMagnitude
-    -returns the magnitude of the joystick
-    -ranges from 0 - 1
-    -calculated using center of the joystick
-  init
-    - runs once to initiate the joystick
-    - adds the event listener that allows the joystick to move around
-   run
-    - Runs in the game loop
-    - gets user input, and returns angle and magnitude values
-]]--
-
 
 function joystick:getAngle(  )
 	if(stick.x - background.x < 0) then
