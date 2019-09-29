@@ -38,16 +38,20 @@ function scene:create( event )
 	-- the physical screen will likely be a different shape than our defined content area
 	-- since we are going to position the background from it's top, left corner, draw the
 	-- background at the real top, left corner.
-	local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
+	local background = display.newImageRect( 'backg.png', screenW, screenH )
+	background.x, background.y = display.screenOriginX, display.screenOriginY
+	-- local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
 	background.anchorX = 0
 	background.anchorY = 0
-	background:setFillColor( .5 )
 
-	mesaIngr = display.newRect(display.actualContentWidth - 55, display.actualContentHeight / 2, 20, 100)
+	mesaIngr = display.newImageRect('mesa-ingr.png', 20, 100)
+	mesaIngr.x, mesaIngr.y = display.actualContentWidth - 55, display.actualContentHeight / 2
 
-	mesaCoz = display.newRect(display.actualContentWidth / 2, display.actualContentHeight - 10, 100, 20)
+	mesaCoz = display.newImageRect("mesa-coz.png", 100, 20)
+	mesaCoz.x, mesaCoz.y = display.actualContentWidth / 2, display.actualContentHeight - 10
 
-	mesaLouc = display.newRect(0 - 35, display.actualContentHeight / 2, 20, 100)
+	mesaLouc = display.newImageRect('mesa-louc.png', 20, 100)
+	mesaLouc.x, mesaLouc.y = 0 - 35, display.actualContentHeight / 2
 
 	carnes = display.newCircle(display.actualContentWidth - 55, (display.actualContentHeight / 2) + 30, 10)
 	carnes:setFillColor(1, 0, 0)
