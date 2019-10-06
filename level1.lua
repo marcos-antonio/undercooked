@@ -17,7 +17,7 @@ local physics = require "physics"
 
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
-local cooker, mesaIngr, mesaCoz, mesaLouc, carnes
+local cooker, mesaIngr, mesaCoz, mesaLouc, carnes, vegetais, panela
 
 function scene:create( event )
 
@@ -53,8 +53,11 @@ function scene:create( event )
 	mesaLouc = display.newImageRect('mesa-louc.png', 20, 100)
 	mesaLouc.x, mesaLouc.y = 0 - 35, display.actualContentHeight / 2
 
-	carnes = display.newCircle(display.actualContentWidth - 55, (display.actualContentHeight / 2) + 30, 10)
-	carnes:setFillColor(1, 0, 0)
+	carnes = criarCarne(display.actualContentWidth - 55, (display.actualContentHeight / 2) + 30)
+
+	vegetais = criarVegetal(display.actualContentWidth - 55, (display.actualContentHeight / 2) - 30)
+
+	panela = criarPanela(display.actualContentWidth / 2 + 20, display.actualContentHeight - 10)
 
 	local button = display.newCircle(7 * display.contentWidth / 8, 6 * display.contentHeight / 8, display.contentWidth/15)
 
@@ -75,6 +78,23 @@ function runGL()
 	cooker:run()
 end
 
+function criarVegetal(x, y)
+	vegetal = display.newCircle(x, y, 10)
+	vegetal:setFillColor(0, 1, 0)
+	return vegetal;
+end
+
+function criarCarne(x, y)
+	carne = display.newCircle(x, y, 10)
+	carne:setFillColor(1, 0, 0)
+	return carne;
+end
+
+function criarPanela(x, y)
+	panela = display.newRect(x, y, 20, 20)
+	panela:setFillColor(0.75)
+	return panela
+end
 
 function scene:show( event )
 	local sceneGroup = self.view
@@ -116,12 +136,17 @@ end
 function button_pressed(event)
 	if (event.phase == 'ended') then
 		cookerCoordinates = {x = cooker:getX(), y = cooker:getY()}
+		if (cooker:isCarryingObject() and (areObjectsCloseToEachOther(cookerCoordinates, carnes) or areObjectsCloseToEachOther(cookerCoordinates, vegetais))) then
+			cooker:destroyCarryingObject()
+		end
 		if (not cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, carnes)) then
-			newMeat = display.newCircle(cooker:getX(), cooker:getY(), 10)
-			newMeat:setFillColor(1, 0, 0)
-			cooker:carryObject(newMeat)
+			newIngr = criarCarne(cooker:getX(), cooker:getY())
+			cooker:carryObject(newIngr)
+		elseif (not cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, vegetais)) then
+			newIngr = criarVegetal(cooker:getX(), cooker:getY())
+			cooker:carryObject(newIngr)
 		else
-			if (cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, mesaCoz)) then
+			if (cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, panela)) then
 				cooker:carryObject(nil)
 			end
 		end
