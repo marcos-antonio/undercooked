@@ -9,6 +9,7 @@ local scene = composer.newScene()
 local joystick = require("joystick")
 local gameloop = require("gameloop")
 local spaceship = require("spaceship")
+local objPanela = require("panela")
 
 -- include Corona's "physics" library
 local physics = require "physics"
@@ -57,7 +58,7 @@ function scene:create( event )
 
 	vegetais = criarVegetal(display.actualContentWidth - 55, (display.actualContentHeight / 2) - 30)
 
-	panela = criarPanela(display.actualContentWidth / 2 + 20, display.actualContentHeight - 10)
+	panela = objPanela.new(display.actualContentWidth / 2 + 20, display.actualContentHeight - 10)
 
 	local button = display.newCircle(7 * display.contentWidth / 8, 6 * display.contentHeight / 8, display.contentWidth/15)
 
@@ -133,6 +134,10 @@ function areObjectsCloseToEachOther(leftiest, rightiest)
 	return (rightiest.x - leftiest.x) < 40 and (rightiest.y - leftiest.y) < 40
 end
 
+function getFUpCoordinates(obj)
+	return {x = obj:getX(), y = obj:getY()}
+end
+
 function button_pressed(event)
 	if (event.phase == 'ended') then
 		cookerCoordinates = {x = cooker:getX(), y = cooker:getY()}
@@ -146,8 +151,10 @@ function button_pressed(event)
 			newIngr = criarVegetal(cooker:getX(), cooker:getY())
 			cooker:carryObject(newIngr)
 		else
-			if (cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, panela)) then
+			if (cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, getFUpCoordinates(panela))) then
+				cObj = cooker:getCarryingObject()
 				cooker:carryObject(nil)
+				panela:adicionarIngrediente(cObj)
 			end
 		end
 	end
