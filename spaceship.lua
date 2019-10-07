@@ -129,7 +129,6 @@ function spaceship:translate( _x, _y, _angle )
 		end
 	else
 	end
-	player.rotation = _angle
 end
 
 function spaceship:debug(  )
