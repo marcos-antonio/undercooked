@@ -24,8 +24,6 @@ local function dimunirTempoCozinhamentoClasse(event)
 end
 
 function panela:dimunirTempoCozinhamento()
-    print('next tempocozinhamentgo')
-    print(tempoCozinhamento - 1)
     tempoCozinhamento = tempoCozinhamento - 1
 end
 
