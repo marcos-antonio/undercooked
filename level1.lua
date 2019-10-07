@@ -151,7 +151,7 @@ function button_pressed(event)
 			newIngr = criarVegetal(cooker:getX(), cooker:getY())
 			cooker:carryObject(newIngr)
 		else
-			if (cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, getFUpCoordinates(panela))) then
+			if (cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, getFUpCoordinates(panela)) and panela:podeAdicionarIngrediente()) then
 				cObj = cooker:getCarryingObject()
 				cooker:carryObject(nil)
 				panela:adicionarIngrediente(cObj)
