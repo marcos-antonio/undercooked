@@ -65,5 +65,26 @@ function panela:getY()
 end
 
 
+function panela:setX(_x)
+    objPan.x = _x
+    panela:setXIngredients(_x)
+end
+function panela:setY(_y)
+    objPan.y = _y
+    panela:setYIngredients(_y)
+end
+
+function panela:setXIngredients(_x)
+    for k, v in pairs(ingredientes) do
+        v.x = _x
+    end
+end
+function panela:setYIngredients(_y)
+    for k, v in pairs(ingredientes) do
+        v.y = _y
+    end
+end
+
+
 
 return panela
