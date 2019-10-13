@@ -98,7 +98,7 @@ function spaceship:init(  )
 	physics.setGravity(0, 0)
 end
 
-function spaceship:destroyCarryingObject()
+function spaceship:destroyCarriedObject()
 	display.remove(carriedObject);
 	carriedObject = nil;
 end

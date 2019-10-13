@@ -102,5 +102,12 @@ function panela:getType()
     return objType
 end
 
+function panela:hide()
+    objPan.x = 9000
+    objPan.y = 9000
+    textoTempoCoz.x = 9000
+    textoTempoCoz.y = 9000
+end
+
 
 return panela

@@ -187,12 +187,13 @@ end
 
 function whenCarryingObject(event)
 	if (canDestroyCarryingObject()) then
-		cooker:destroyCarryingObject()
+		cooker:destroyCarriedObject()
 	elseif(canPutPanIngredientsOnDish(pan, dish)) then
-		local cPan = cooker:getCarryingObject()
-		dish:setIngredients(cPan:getIngredients())
-		cPan:setIngredients({})
-		cooker:destroyCarryingObject()
+		dish:setIngredients(pan:getIngredients())
+		pan:setIngredients({})
+		cooker:destroyCarriedObject()
+		pan:hide()
+		pan = createPan()
 	elseif (canPutIngredientOnPan(pan)) then
 		local cObj = cooker:getCarryingObject()
 		cooker:setCarriedObject(nil)
