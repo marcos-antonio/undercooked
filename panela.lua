@@ -1,8 +1,8 @@
 local panela = {}
 local panela_mt = {__index = panela};
 
-local objPan, tempoCozinhamento, timerAtual, ingredientes, textoTempoCoz
-local limiteTempoCozinhamento = 15
+local objPan, tempoCozinhamento, timerAtual, ingredientes, textoTempoCoz,x, y
+local limiteTempoCozinhamento = 2
 
 function panela.new(_x, _y)
     local newPanela = {}
@@ -55,6 +55,10 @@ end
 
 function panela:podeAdicionarIngrediente()
     return table.getn(ingredientes) < 3 and tempoCozinhamento > 0
+end
+
+function panela:isPickable()
+    return tempoCozinhamento == 0
 end
 
 function panela:getX()
