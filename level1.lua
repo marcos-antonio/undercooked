@@ -10,6 +10,7 @@ local joystick = require("joystick")
 local gameloop = require("gameloop")
 local spaceship = require("spaceship")
 local objPanela = require("panela")
+local objDish = require("prato")
 
 -- include Corona's "physics" library
 local physics = require "physics"
@@ -18,7 +19,9 @@ local physics = require "physics"
 
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
-local cooker, mesaIngr, mesaCoz, mesaLouc, carnes, vegetais, panela
+local cooker, carnes, vegetais
+local pan, dish
+local mesaIngr, mesaCoz, mesaLouc, mesaPrat
 
 function scene:create( event )
 
@@ -49,7 +52,10 @@ function scene:create( event )
 	mesaIngr.x, mesaIngr.y = display.actualContentWidth - 55, display.actualContentHeight / 2
 
 	mesaCoz = display.newImageRect("mesa-coz.png", 100, 20)
-	mesaCoz.x, mesaCoz.y = display.actualContentWidth / 2, display.actualContentHeight - 10
+	mesaCoz.x, mesaCoz.y = display.contentWidth / 4, display.actualContentHeight - 10
+
+	mesaPrat = display.newImageRect("mesa-coz.png", 100, 20)
+	mesaPrat.x, mesaPrat.y = (display.contentWidth / 4) * 3, display.actualContentHeight - 10
 
 	mesaLouc = display.newImageRect('mesa-louc.png', 20, 100)
 	mesaLouc.x, mesaLouc.y = 0 - 35, display.actualContentHeight / 2
@@ -58,7 +64,9 @@ function scene:create( event )
 
 	vegetais = criarVegetal(display.actualContentWidth - 55, (display.actualContentHeight / 2) - 30)
 
-	panela = objPanela.new(display.actualContentWidth / 2 + 20, display.actualContentHeight - 10)
+	pan = objPanela.new(display.contentWidth / 4 + 20, display.actualContentHeight - 10)
+
+	dish = Dish:new((display.contentWidth / 4) * 3 + 20, display.actualContentHeight - 10)
 
 	local button = display.newCircle(7 * display.contentWidth / 8, 6 * display.contentHeight / 8, display.contentWidth/15)
 
@@ -89,12 +97,6 @@ function criarCarne(x, y)
 	carne = display.newCircle(x, y, 10)
 	carne:setFillColor(1, 0, 0)
 	return carne;
-end
-
-function criarPanela(x, y)
-	panela = display.newRect(x, y, 20, 20)
-	panela:setFillColor(0.75)
-	return panela
 end
 
 function scene:show( event )
@@ -134,31 +136,80 @@ function areObjectsCloseToEachOther(leftiest, rightiest)
 	return (rightiest.x - leftiest.x) < 40 and (rightiest.y - leftiest.y) < 40
 end
 
-function getFUpCoordinates(obj)
+function getObjectCoordinates(obj)
 	return {x = obj:getX(), y = obj:getY()}
+end
+
+function canPickupIngr(coordinates, ingr)
+	return not cooker:isCarryingObject() and areObjectsCloseToEachOther(coordinates, ingr)
+end
+
+function canPickupPan(coordinates, pan)
+	return not cooker:isCarryingObject() and areObjectsCloseToEachOther(coordinates, getObjectCoordinates(pan)) and pan:isPickable()
+end
+
+
+function canPickupDish(coordinates, pra)
 end
 
 function button_pressed(event)
 	if (event.phase == 'ended') then
-		cookerCoordinates = {x = cooker:getX(), y = cooker:getY()}
-		if (cooker:isCarryingObject() and (areObjectsCloseToEachOther(cookerCoordinates, carnes) or areObjectsCloseToEachOther(cookerCoordinates, vegetais))) then
-			cooker:destroyCarryingObject()
-		end
-		if (not cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, carnes)) then
-			newIngr = criarCarne(cooker:getX(), cooker:getY())
-			cooker:carryObject(newIngr)
-		elseif (not cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, vegetais)) then
-			newIngr = criarVegetal(cooker:getX(), cooker:getY())
-			cooker:carryObject(newIngr)
+		if(cooker:isCarryingObject()) then
+			whenCarryingObject()
 		else
-			if (cooker:isCarryingObject() and areObjectsCloseToEachOther(cookerCoordinates, getFUpCoordinates(panela)) and panela:podeAdicionarIngrediente()) then
-				cObj = cooker:getCarryingObject()
-				cooker:carryObject(nil)
-				panela:adicionarIngrediente(cObj)
-			end
+			whenNotCarryingObject()
 		end
 	end
 end
+
+function canDestroyCarryingObject()
+	if (cooker.getCarryingObject().getType == nil) then
+		return (areObjectsCloseToEachOther(getObjectCoordinates(cooker), carnes) or areObjectsCloseToEachOther(getObjectCoordinates(cooker), vegetais))
+	end
+	return false
+end
+
+function canPutPanIngredientsOnDish(pan, dish)
+	if (not (cooker.getCarryingObject().getType == nil) and cooker.getCarryingObject().getType() == 1
+		and areObjectsCloseToEachOther(getObjectCoordinates(pan), getObjectCoordinates(dish))) then
+		return true
+	end
+	return false
+end
+
+function canPutIngredientOnPan(pan)
+	return cooker.getCarryingObject().getType == nil and areObjectsCloseToEachOther(getObjectCoordinates(cooker), getObjectCoordinates(pan)) and pan:podeAdicionarIngrediente()
+end
+
+function whenCarryingObject(event)
+	if (canDestroyCarryingObject()) then
+		cooker:destroyCarryingObject()
+	elseif(canPutPanIngredientsOnDish(pan, dish)) then
+		local cPan = cooker:getCarryingObject()
+		dish:setIngredients(cPan:getIngredients())
+		cPan:setIngredients({})
+		cooker:destroyCarryingObject()
+	elseif (canPutIngredientOnPan(pan)) then
+		local cObj = cooker:getCarryingObject()
+		cooker:carryObject(nil)
+		pan:adicionarIngrediente(cObj)
+	end
+end
+
+
+function whenNotCarryingObject(event)
+	local cookerCoordinates = getObjectCoordinates(cooker)
+	if (canPickupIngr(cookerCoordinates, carnes)) then
+		local newIngr = criarCarne(cooker:getX(), cooker:getY())
+		cooker:carryObject(newIngr)
+	elseif (canPickupIngr(cookerCoordinates, vegetais)) then
+		local newIngr = criarVegetal(cooker:getX(), cooker:getY())
+		cooker:carryObject(newIngr)
+	elseif (canPickupPan(cookerCoordinates, pan)) then
+		cooker:carryObject(pan)
+	end
+end
+
 
 function scene:destroy( event )
 

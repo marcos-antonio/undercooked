@@ -3,6 +3,7 @@ local panela_mt = {__index = panela};
 
 local objPan, tempoCozinhamento, timerAtual, ingredientes, textoTempoCoz,x, y
 local limiteTempoCozinhamento = 2
+local objType = 1
 
 function panela.new(_x, _y)
     local newPanela = {}
@@ -62,33 +63,44 @@ function panela:isPickable()
 end
 
 function panela:getX()
-    return x
+    return objPan.x
 end
 function panela:getY()
-    return y
+    return objPan.y
+end
+
+function panela:getIngredients()
+    return ingredientes
+end
+
+function panela:setIngredients(_ingr)
+    ingredientes = _ingr
 end
 
 
 function panela:setX(_x)
     objPan.x = _x
-    panela:setXIngredients(_x)
+    panela:setXOnIngredients(_x)
 end
 function panela:setY(_y)
     objPan.y = _y
-    panela:setYIngredients(_y)
+    panela:setYOnIngredients(_y)
 end
 
-function panela:setXIngredients(_x)
+function panela:setXOnIngredients(_x)
     for k, v in pairs(ingredientes) do
         v.x = _x
     end
 end
-function panela:setYIngredients(_y)
+function panela:setYOnIngredients(_y)
     for k, v in pairs(ingredientes) do
         v.y = _y
     end
 end
 
+function panela:getType()
+    return objType
+end
 
 
 return panela

@@ -129,8 +129,6 @@ function spaceship:translate( _x, _y, _angle )
 	if (not (player.y + _y > display.actualContentHeight or player.y + _y < 0)) then
 		player.y = player.y + _y;
 		if (carriedObject) then
-			print('sending y')
-			print(player.y + _y)
 			if (not not carriedObject.setY) then
 				carriedObject:setY(player.y + _y)
 			else
