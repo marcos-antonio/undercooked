@@ -103,7 +103,7 @@ function spaceship:destroyCarryingObject()
 	carriedObject = nil;
 end
 
-function spaceship:carryObject(obj)
+function spaceship:setCarriedObject(obj)
 	carriedObject = obj
 end
 

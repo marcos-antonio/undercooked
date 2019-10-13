@@ -191,7 +191,7 @@ function whenCarryingObject(event)
 		cooker:destroyCarryingObject()
 	elseif (canPutIngredientOnPan(pan)) then
 		local cObj = cooker:getCarryingObject()
-		cooker:carryObject(nil)
+		cooker:setCarriedObject(nil)
 		pan:adicionarIngrediente(cObj)
 	end
 end
@@ -201,12 +201,12 @@ function whenNotCarryingObject(event)
 	local cookerCoordinates = getObjectCoordinates(cooker)
 	if (canPickupIngr(cookerCoordinates, carnes)) then
 		local newIngr = criarCarne(cooker:getX(), cooker:getY())
-		cooker:carryObject(newIngr)
+		cooker:setCarriedObject(newIngr)
 	elseif (canPickupIngr(cookerCoordinates, vegetais)) then
 		local newIngr = criarVegetal(cooker:getX(), cooker:getY())
-		cooker:carryObject(newIngr)
+		cooker:setCarriedObject(newIngr)
 	elseif (canPickupPan(cookerCoordinates, pan)) then
-		cooker:carryObject(pan)
+		cooker:setCarriedObject(pan)
 	end
 end
 
