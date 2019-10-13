@@ -10,7 +10,7 @@ local joystick = require("joystick")
 local gameloop = require("gameloop")
 local spaceship = require("spaceship")
 local objPanela = require("panela")
-local objDish = require("prato")
+require("dish")
 
 -- include Corona's "physics" library
 local physics = require "physics"
