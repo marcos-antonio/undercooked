@@ -64,7 +64,7 @@ function scene:create( event )
 
 	vegetais = criarVegetal(display.actualContentWidth - 55, (display.actualContentHeight / 2) - 30)
 
-	pan = objPanela.new(display.contentWidth / 4 + 20, display.actualContentHeight - 10)
+	pan = createPan()
 
 	dish = Dish:new((display.contentWidth / 4) * 3 + 20, display.actualContentHeight - 10)
 
@@ -97,6 +97,10 @@ function criarCarne(x, y)
 	carne = display.newCircle(x, y, 10)
 	carne:setFillColor(1, 0, 0)
 	return carne;
+end
+
+function createPan(x, y)
+	return objPanela.new(display.contentWidth / 4 + 20, display.actualContentHeight - 10)
 end
 
 function scene:show( event )
