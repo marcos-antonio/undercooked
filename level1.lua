@@ -145,15 +145,16 @@ function getObjectCoordinates(obj)
 end
 
 function canPickupIngr(coordinates, ingr)
-	return not cooker:isCarryingObject() and areObjectsCloseToEachOther(coordinates, ingr)
+	return areObjectsCloseToEachOther(coordinates, ingr)
 end
 
 function canPickupPan(coordinates, pan)
-	return not cooker:isCarryingObject() and areObjectsCloseToEachOther(coordinates, getObjectCoordinates(pan)) and pan:isPickable()
+	return areObjectsCloseToEachOther(coordinates, getObjectCoordinates(pan)) and pan:isPickable()
 end
 
 
-function canPickupDish(coordinates, pra)
+function canPickupDish(dish)
+	return areObjectsCloseToEachOther(getObjectCoordinates(cooker), getObjectCoordinates(dish)) and dish:isPickable()
 end
 
 function button_pressed(event)
@@ -212,7 +213,10 @@ function whenNotCarryingObject(event)
 		cooker:setCarriedObject(newIngr)
 	elseif (canPickupPan(cookerCoordinates, pan)) then
 		cooker:setCarriedObject(pan)
+	elseif(canPickupDish(dish)) then
+		cooker:setCarriedObject(dish)
 	end
+
 end
 
 

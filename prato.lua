@@ -16,6 +16,10 @@ function Dish:new(_x, _y)
     return self
 end
 
+function Dish:isPickable()
+    return table.getn(self.ingredients) > 0
+end
+
 function Dish:setIngredients(_ingredients)
     self.ingredients = _ingredients
     for k, v in pairs(self.ingredients) do
@@ -38,4 +42,25 @@ end
 
 function Dish:getY()
     return self.dishDispl.y
+end
+
+function Dish:setX(_x)
+    self.dishDispl.x = _x
+    Dish:setXOnIngredients(_x)
+end
+
+function Dish:setY(_y)
+    self.dishDispl.y = _y
+    Dish:setYOnIngredients(_y)
+end
+
+function Dish:setXOnIngredients(_x)
+    for k, v in pairs(self.ingredients) do
+        v.x = _x
+    end
+end
+function Dish:setYOnIngredients(_y)
+    for k, v in pairs(self.ingredients) do
+        v.y = _y
+    end
 end
