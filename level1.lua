@@ -21,7 +21,7 @@ local physics = require "physics"
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 local cooker, carnes, vegetais
 local pan, dish
-local mesaIngr, mesaCoz, mesaLouc, mesaPrat
+local mesaIngr, mesaCoz, mesaLouc, mesaPrat, balcony
 
 function scene:create( event )
 
@@ -47,6 +47,9 @@ function scene:create( event )
 	-- local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
 	background.anchorX = 0
 	background.anchorY = 0
+
+	balcony = display.newImageRect('balcony.png', 100, 20)
+	balcony.x, balcony.y = (display.contentWidth / 4) * 2, 0 + 10
 
 	mesaIngr = display.newImageRect('mesa-ingr.png', 20, 100)
 	mesaIngr.x, mesaIngr.y = display.actualContentWidth - 55, display.actualContentHeight / 2
@@ -77,6 +80,7 @@ function scene:create( event )
 	sceneGroup:insert( mesaIngr )
 	sceneGroup:insert( mesaCoz )
 	sceneGroup:insert( mesaLouc )
+	sceneGroup:insert( balcony )
 	sceneGroup:insert( cooker:getDisplayObject() )
 	gameloop:init()
 
