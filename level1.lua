@@ -11,6 +11,7 @@ local gameloop = require("gameloop")
 local spaceship = require("spaceship")
 local objPanela = require("panela")
 require("dish")
+require("deliverybalcony")
 
 -- include Corona's "physics" library
 local physics = require "physics"
@@ -48,8 +49,7 @@ function scene:create( event )
 	background.anchorX = 0
 	background.anchorY = 0
 
-	balcony = display.newImageRect('balcony.png', 100, 20)
-	balcony.x, balcony.y = (display.contentWidth / 4) * 2, 0 + 10
+	balcony = DeliveryBalcony:new()
 
 	mesaIngr = display.newImageRect('mesa-ingr.png', 20, 100)
 	mesaIngr.x, mesaIngr.y = display.actualContentWidth - 55, display.actualContentHeight / 2
@@ -80,7 +80,7 @@ function scene:create( event )
 	sceneGroup:insert( mesaIngr )
 	sceneGroup:insert( mesaCoz )
 	sceneGroup:insert( mesaLouc )
-	sceneGroup:insert( balcony )
+	sceneGroup:insert( balcony.balconyDisplay )
 	sceneGroup:insert( cooker:getDisplayObject() )
 	gameloop:init()
 
@@ -140,12 +140,73 @@ function scene:hide( event )
 
 end
 
+
+function button_pressed(event)
+	if (event.phase == 'ended') then
+		if(cooker:isCarryingObject()) then
+			whenCarryingObject()
+		else
+			whenNotCarryingObject()
+		end
+	end
+end
+
 function areObjectsCloseToEachOther(leftiest, rightiest)
 	return (rightiest.x - leftiest.x) < 40 and (rightiest.y - leftiest.y) < 40
 end
 
 function getObjectCoordinates(obj)
 	return {x = obj:getX(), y = obj:getY()}
+end
+
+function canDestroyCarryingObject()
+	if (cooker.getCarryingObject().getType == nil) then
+		return (areObjectsCloseToEachOther(getObjectCoordinates(cooker), carnes) or areObjectsCloseToEachOther(getObjectCoordinates(cooker), vegetais))
+	end
+	return false
+end
+
+function isPan(obj)
+	return not (cooker.getCarryingObject().getType == nil) and cooker.getCarryingObject().getType() == 1
+end
+
+function isDish(obj)
+	return not (cooker.getCarryingObject().getSelfType == nil) and cooker.getCarryingObject():getSelfType() == 0
+end
+
+function isIngr(obj)
+	return not (cooker:getCarryingObject().getType) and not ((cooker:getCarryingObject().getSelfType))
+end
+
+function canPutPanIngredientsOnDish(pan, dish)
+	return areObjectsCloseToEachOther(getObjectCoordinates(pan), getObjectCoordinates(dish))
+end
+
+function canPutIngredientOnPan(pan)
+	return cooker.getCarryingObject().getType == nil and areObjectsCloseToEachOther(getObjectCoordinates(cooker), getObjectCoordinates(pan)) and pan:podeAdicionarIngrediente()
+end
+
+function canPutDishOnBalcony(dish)
+	return areObjectsCloseToEachOther(getObjectCoordinates(dish), getObjectCoordinates(balcony)) and dish:isDeliverable()
+end
+
+function whenCarryingObject(event)
+	if (canDestroyCarryingObject()) then
+		cooker:destroyCarriedObject()
+	elseif(isPan(cooker:getCarryingObject()) and canPutPanIngredientsOnDish(pan, dish)) then
+		dish:setIngredients(pan:getIngredients())
+		pan:setIngredients({})
+		cooker:destroyCarriedObject()
+		pan:hide()
+		pan = createPan()
+	elseif (isIngr(cooker:getCarryingObject()) and canPutIngredientOnPan(pan)) then
+		local cObj = cooker:getCarryingObject()
+		cooker:setCarriedObject(nil)
+		pan:adicionarIngrediente(cObj)
+	elseif (isDish(cooker:getCarryingObject()) and canPutDishOnBalcony(dish)) then
+		cooker:setCarriedObject(nil)
+		balcony:deliverDish(dish)
+	end
 end
 
 function canPickupIngr(coordinates, ingr)
@@ -159,51 +220,6 @@ end
 
 function canPickupDish(dish)
 	return areObjectsCloseToEachOther(getObjectCoordinates(cooker), getObjectCoordinates(dish)) and dish:isPickable()
-end
-
-function button_pressed(event)
-	if (event.phase == 'ended') then
-		if(cooker:isCarryingObject()) then
-			whenCarryingObject()
-		else
-			whenNotCarryingObject()
-		end
-	end
-end
-
-function canDestroyCarryingObject()
-	if (cooker.getCarryingObject().getType == nil) then
-		return (areObjectsCloseToEachOther(getObjectCoordinates(cooker), carnes) or areObjectsCloseToEachOther(getObjectCoordinates(cooker), vegetais))
-	end
-	return false
-end
-
-function canPutPanIngredientsOnDish(pan, dish)
-	if (not (cooker.getCarryingObject().getType == nil) and cooker.getCarryingObject().getType() == 1
-		and areObjectsCloseToEachOther(getObjectCoordinates(pan), getObjectCoordinates(dish))) then
-		return true
-	end
-	return false
-end
-
-function canPutIngredientOnPan(pan)
-	return cooker.getCarryingObject().getType == nil and areObjectsCloseToEachOther(getObjectCoordinates(cooker), getObjectCoordinates(pan)) and pan:podeAdicionarIngrediente()
-end
-
-function whenCarryingObject(event)
-	if (canDestroyCarryingObject()) then
-		cooker:destroyCarriedObject()
-	elseif(canPutPanIngredientsOnDish(pan, dish)) then
-		dish:setIngredients(pan:getIngredients())
-		pan:setIngredients({})
-		cooker:destroyCarriedObject()
-		pan:hide()
-		pan = createPan()
-	elseif (canPutIngredientOnPan(pan)) then
-		local cObj = cooker:getCarryingObject()
-		cooker:setCarriedObject(nil)
-		pan:adicionarIngrediente(cObj)
-	end
 end
 
 

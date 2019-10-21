@@ -32,7 +32,7 @@ function Dish:getIngredients()
     return self.ingredients
 end
 
-function Dish:getType()
+function Dish:getSelfType()
     return self.objType
 end
 
@@ -63,4 +63,8 @@ function Dish:setYOnIngredients(_y)
     for k, v in pairs(self.ingredients) do
         v.y = _y
     end
+end
+
+function Dish:isDeliverable()
+    return table.getn(self.ingredients) > 0
 end

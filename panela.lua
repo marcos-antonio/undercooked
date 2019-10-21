@@ -5,6 +5,11 @@ local objPan, tempoCozinhamento, timerAtual, ingredientes, textoTempoCoz,x, y
 local limiteTempoCozinhamento = 2
 local objType = 1
 
+Pan = {
+    panDispl, cookingTime, cookingTimeLimit,
+    objType, ingredients, cookingTimeDisplay, currentTimer
+}
+
 function panela.new(_x, _y)
     local newPanela = {}
     objPan = display.newRect(_x, _y, 20, 20)
