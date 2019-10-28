@@ -33,6 +33,9 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 
+	local backgroundMusic = audio.loadStream( "game.mp3" )
+	audio.play( backgroundMusic, { channel=1, loops=-1 } )
+
 	-- We need physics started to add bodies, but we don't want the simulaton
 	-- running until the scene is on the screen.
 	physics.start()
@@ -133,6 +136,7 @@ function scene:hide( event )
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
+		audio.stop( 1 )
 		physics.stop()
 	elseif phase == "did" then
 		-- Called when the scene is now off screen

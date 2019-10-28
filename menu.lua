@@ -10,6 +10,8 @@ local scene = composer.newScene()
 -- include Corona's "widget" library
 local widget = require "widget"
 
+audio.reserveChannels( 1 )
+
 --------------------------------------------
 
 -- forward declarations and other locals
@@ -26,6 +28,8 @@ end
 
 function scene:create( event )
 	local sceneGroup = self.view
+
+	local backgroundMusic = audio.loadStream( "menu.mp3" )
 
 	-- Called when the scene's view does not exist.
 	--
@@ -60,6 +64,7 @@ function scene:create( event )
 	sceneGroup:insert( background )
 	sceneGroup:insert( titleLogo )
 	sceneGroup:insert( playBtn )
+	audio.play( backgroundMusic, { channel=1, loops=-1 } )
 end
 
 function scene:show( event )
@@ -81,6 +86,7 @@ function scene:hide( event )
 	local phase = event.phase
 
 	if event.phase == "will" then
+		audio.stop( 1 )
 		-- Called when the scene is on screen and is about to move off screen
 		--
 		-- INSERT code here to pause the scene
