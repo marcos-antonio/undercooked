@@ -152,7 +152,19 @@ function button_pressed(event)
 end
 
 function areObjectsCloseToEachOther(leftiest, rightiest)
-	return (rightiest.x - leftiest.x) < 40 and (rightiest.y - leftiest.y) < 40
+	local xClose, yClose;
+	if (rightiest.x > leftiest.x) then
+		xClose = rightiest.x - leftiest.x < 40
+	else
+		xClose = leftiest.x - rightiest.x < 40
+	end
+	if (rightiest.x > leftiest.x) then
+		yClose = rightiest.y - leftiest.y < 40
+	else
+		yClose = leftiest.y - rightiest.y < 40
+	end
+
+	return xClose and yClose
 end
 
 function getObjectCoordinates(obj)
