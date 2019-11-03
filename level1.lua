@@ -63,9 +63,6 @@ function scene:create( event )
 	mesaPrat = display.newImageRect("mesa-coz.png", 100, 20)
 	mesaPrat.x, mesaPrat.y = (display.contentWidth / 4) * 3, display.actualContentHeight - 10
 
-	mesaLouc = display.newImageRect('mesa-louc.png', 20, 100)
-	mesaLouc.x, mesaLouc.y = 0 - 35, display.actualContentHeight / 2
-
 	carnes = criarCarne(display.actualContentWidth - 55, (display.actualContentHeight / 2) + 30)
 
 	vegetais = criarVegetal(display.actualContentWidth - 55, (display.actualContentHeight / 2) - 30)
@@ -82,7 +79,6 @@ function scene:create( event )
 	sceneGroup:insert( background )
 	sceneGroup:insert( mesaIngr )
 	sceneGroup:insert( mesaCoz )
-	sceneGroup:insert( mesaLouc )
 	sceneGroup:insert( balcony.balconyDisplay )
 	sceneGroup:insert( cooker:getDisplayObject() )
 	gameloop:init()
