@@ -217,7 +217,10 @@ function whenCarryingObject(event)
 		pan:adicionarIngrediente(cObj)
 	elseif (isDish(cooker:getCarryingObject()) and canPutDishOnBalcony(dish)) then
 		cooker:setCarriedObject(nil)
-		balcony:deliverDish(dish)
+		-- balcony:deliverDish(dish)
+		dish:setX(9000)
+		dish:setY(9000)
+		dish = Dish:new((display.contentWidth / 4) * 3 + 20, display.actualContentHeight - 10)
 	end
 end
 
