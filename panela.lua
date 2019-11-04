@@ -41,8 +41,6 @@ end
 function panela:adicionarIngrediente(ingr)
     ingr.x = x
     ingr.y = y
-    ingr.width = 5
-    ingr.height = 5
     table.insert(ingredientes, ingr)
     tempoCozinhamento = limiteTempoCozinhamento
     print(timerAtual)

@@ -91,14 +91,16 @@ function runGL()
 end
 
 function criarVegetal(x, y)
-	vegetal = display.newCircle(x, y, 10)
-	vegetal:setFillColor(0, 1, 0)
+	vegetal = display.newImageRect('Apple.png', 16, 16)
+	vegetal.x = x
+	vegetal.y = y
 	return vegetal;
 end
 
 function criarCarne(x, y)
-	carne = display.newCircle(x, y, 10)
-	carne:setFillColor(1, 0, 0)
+	carne = display.newImageRect('Bacon.png', 16, 16)
+	carne.x = x
+	carne.y = y
 	return carne;
 end
 
