@@ -300,6 +300,7 @@ function whenCarryingObject(event)
 		dish:setX(9000)
 		dish:setY(9000)
 		dish = Dish:new((display.contentWidth / 4) * 3 + 20, display.actualContentHeight - 10)
+		sceneGroup:insert( dish:getDisplay() )
 		increaseScore(5)
 	end
 end
