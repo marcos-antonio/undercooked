@@ -22,7 +22,7 @@ local physics = require "physics"
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 local cooker, carnes, vegetais
 local pan, dish
-local mesaIngr, mesaCoz, mesaLouc, mesaPrat, balcony
+local mesaIngr, mesaCoz, mesaLouc, mesaPrat, balcony, score
 
 function scene:create( event )
 
@@ -79,6 +79,10 @@ function scene:create( event )
 	button:addEventListener( "touch", button_pressed );
 	local countdown = display.newText( 60, 0, 20, native.systemFont, 40 );
 	countdown:setFillColor( 0, 0, 0 )
+
+	score = display.newText( 0, display.contentCenterX * 2, 20, native.systemFont, 40 );
+	score:setFillColor( 0, 0, 0 )
+
 	local tm = timer.performWithDelay(1000,
 		function(event)
 			local cd = event.source.params.obj
@@ -108,12 +112,17 @@ function scene:create( event )
 	sceneGroup:insert( carnes )
 	sceneGroup:insert( vegetais )
 	sceneGroup:insert( countdown )
+	sceneGroup:insert( score )
 	sceneGroup:insert( dish:getDisplay() )
 	sceneGroup:insert( cooker:getDisplayObject() )
 end
 
 function runGL()
 	cooker:run()
+end
+
+function increaseScore(value)
+	score.text = tonumber(score.text) + value
 end
 
 function criarVegetal(x, y)
@@ -251,6 +260,7 @@ function whenCarryingObject(event)
 		dish:setX(9000)
 		dish:setY(9000)
 		dish = Dish:new((display.contentWidth / 4) * 3 + 20, display.actualContentHeight - 10)
+		increaseScore(5)
 	end
 end
 
