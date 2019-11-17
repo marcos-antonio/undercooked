@@ -77,17 +77,17 @@ function scene:create( event )
 	cooker = spaceship.new(0, 0, 0.01)
 
 	button:addEventListener( "touch", button_pressed );
-	local countdown = display.newText( 2, display.contentCenterX, 20, native.systemFont, 40 );
+	local countdown = display.newText( 1, display.contentCenterX, 20, native.systemFont, 40 );
 	local tm = timer.performWithDelay(1000,
 		function(event)
 			local cd = event.source.params.obj
 			print(tonumber(cd.text))
 			if (tonumber(cd.text) <= 1) then
-				composer.gotoScene('menu', 'fade', 200)
+				composer.gotoScene('score', {effect = "fade", time = 200, params = { score = 150}})
 			else
 				cd.text = cd.text - 1
 			end
-		end, 2)
+		end, 1)
 	tm.params = {obj = countdown}
 
 	stick:init()

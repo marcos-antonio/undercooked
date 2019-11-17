@@ -36,6 +36,10 @@ function Dish:getSelfType()
     return self.objType
 end
 
+function Dish:getDisplay()
+    return self.dishDispl
+end
+
 function Dish:getX()
     return self.dishDispl.x
 end

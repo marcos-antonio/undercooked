@@ -102,6 +102,14 @@ function joystick:getMagnitude(  )
 	end
 end
 
+function joystick:getStick ()
+	return stick;
+end
+
+function joystick:getShadow ()
+	return background;
+end
+
 function joystick:getStickX ()
 	return stick.x;
 end
