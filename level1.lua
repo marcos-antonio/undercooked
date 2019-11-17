@@ -75,15 +75,40 @@ function scene:create( event )
 
 	local stick = joystick.new(display.contentWidth / 8, 6 * display.contentHeight / 8)
 	cooker = spaceship.new(0, 0, 0.01)
+
+	button:addEventListener( "touch", button_pressed );
+	local countdown = display.newText( 2, display.contentCenterX, 20, native.systemFont, 40 );
+	local tm = timer.performWithDelay(1000,
+		function(event)
+			local cd = event.source.params.obj
+			print(tonumber(cd.text))
+			if (tonumber(cd.text) <= 1) then
+				composer.gotoScene('menu', 'fade', 200)
+			else
+				cd.text = cd.text - 1
+			end
+		end, 2)
+	tm.params = {obj = countdown}
+
 	stick:init()
+	gameloop:init()
+
+
 	sceneGroup:insert( background )
 	sceneGroup:insert( mesaIngr )
 	sceneGroup:insert( mesaCoz )
+	sceneGroup:insert( mesaPrat )
 	sceneGroup:insert( balcony.balconyDisplay )
+	sceneGroup:insert( stick.getStick() )
+	sceneGroup:insert( stick.getShadow() )
+	sceneGroup:insert( pan.getObj() )
+	sceneGroup:insert( pan.getCounter() )
+	sceneGroup:insert( button )
+	sceneGroup:insert( carnes )
+	sceneGroup:insert( vegetais )
+	sceneGroup:insert( countdown )
+	sceneGroup:insert( dish:getDisplay() )
 	sceneGroup:insert( cooker:getDisplayObject() )
-	gameloop:init()
-
-	button:addEventListener( "touch", button_pressed );
 end
 
 function runGL()
@@ -137,6 +162,8 @@ function scene:hide( event )
 		audio.stop( 1 )
 		physics.stop()
 	elseif phase == "did" then
+		Runtime:removeEventListener("enterFrame", runGL)
+		composer.removeScene( "level1" )
 		-- Called when the scene is now off screen
 	end
 
