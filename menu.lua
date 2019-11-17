@@ -47,7 +47,7 @@ function scene:create( event )
 	-- create a widget button (which will loads level1.lua on release)
 	playBtn = widget.newButton{
 		label="New Game",
-		labelColor = { default={255}, over={128} },
+		labelColor = { default={0}, over={128} },
 		default="button.png",
 		font="Advertising_Script_Bold.ttf",
 		fontSize=28,

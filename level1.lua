@@ -74,10 +74,11 @@ function scene:create( event )
 	local button = display.newCircle(7 * display.contentWidth / 8, 6 * display.contentHeight / 8, display.contentWidth/15)
 
 	local stick = joystick.new(display.contentWidth / 8, 6 * display.contentHeight / 8)
-	cooker = spaceship.new(0, 0, 0.01)
+	cooker = spaceship.new(display.contentCenterX, display.contentCenterY, 0.01)
 
 	button:addEventListener( "touch", button_pressed );
-	local countdown = display.newText( 1, display.contentCenterX, 20, native.systemFont, 40 );
+	local countdown = display.newText( 60, 0, 20, native.systemFont, 40 );
+	countdown:setFillColor( 0, 0, 0 )
 	local tm = timer.performWithDelay(1000,
 		function(event)
 			local cd = event.source.params.obj
@@ -87,7 +88,7 @@ function scene:create( event )
 			else
 				cd.text = cd.text - 1
 			end
-		end, 1)
+		end, 60)
 	tm.params = {obj = countdown}
 
 	stick:init()

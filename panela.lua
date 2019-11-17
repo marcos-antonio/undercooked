@@ -72,6 +72,14 @@ function panela:getY()
     return objPan.y
 end
 
+function panela:getObj()
+    return objPan
+end
+
+function panela:getCounter()
+    return textoTempoCoz
+end
+
 function panela:getIngredients()
     return ingredientes
 end
