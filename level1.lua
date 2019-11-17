@@ -22,7 +22,8 @@ local physics = require "physics"
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 local cooker, carnes, vegetais
 local pan, dish
-local mesaIngr, mesaCoz, mesaLouc, mesaPrat, balcony, score
+local mesaIngr, mesaCoz, mesaPrat, balcony, score, sceneGroup
+local blinkIngr, blinkCoz, blinkPrat, blinkBalc = true, false, false, false
 
 function scene:create( event )
 
@@ -31,7 +32,7 @@ function scene:create( event )
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
-	local sceneGroup = self.view
+	sceneGroup = self.view
 
 	local backgroundMusic = audio.loadStream( "game.mp3" )
 	audio.play( backgroundMusic, { channel=1, loops=-1 } )
@@ -86,17 +87,17 @@ function scene:create( event )
 	local tm = timer.performWithDelay(1000,
 		function(event)
 			local cd = event.source.params.obj
-			print(tonumber(cd.text))
 			if (tonumber(cd.text) <= 1) then
-				composer.gotoScene('score', {effect = "fade", time = 200, params = { score = 150}})
+				composer.gotoScene('score', {effect = "fade", time = 200, params = { score = tonumber(score.text)}})
 			else
 				cd.text = cd.text - 1
 			end
 		end, 60)
 	tm.params = {obj = countdown}
 
+	startBlinking()
+
 	stick:init()
-	gameloop:init()
 
 
 	sceneGroup:insert( background )
@@ -117,6 +118,36 @@ function scene:create( event )
 	sceneGroup:insert( cooker:getDisplayObject() )
 end
 
+function startBlinking()
+	timer.performWithDelay(250,
+	function(event)
+		if (blinkIngr and mesaIngr.alpha == 1) then
+			mesaIngr.alpha = 0.50
+		else
+			mesaIngr.alpha = 1
+		end
+
+		if (blinkCoz and mesaCoz.alpha == 1) then
+			mesaCoz.alpha = 0.50
+		else
+			mesaCoz.alpha = 1
+		end
+
+		if (blinkPrat and mesaPrat.alpha == 1) then
+			mesaPrat.alpha = 0.50
+		else
+			mesaPrat.alpha = 1
+		end
+
+		if (blinkBalc and balcony:getDisplay().alpha == 1) then
+			balcony:getDisplay().alpha = 0.50
+		else
+			balcony:getDisplay().alpha = 1
+		end
+
+	end, 0)
+end
+
 function runGL()
 	cooker:run()
 end
@@ -127,6 +158,7 @@ end
 
 function criarVegetal(x, y)
 	vegetal = display.newImageRect('Apple.png', 16, 16)
+	sceneGroup:insert(vegetal)
 	vegetal.x = x
 	vegetal.y = y
 	return vegetal;
@@ -134,13 +166,17 @@ end
 
 function criarCarne(x, y)
 	carne = display.newImageRect('Bacon.png', 16, 16)
+	sceneGroup:insert(carne)
 	carne.x = x
 	carne.y = y
 	return carne;
 end
 
 function createPan(x, y)
-	return objPanela.new(display.contentWidth / 4 + 20, display.actualContentHeight - 10)
+	local objPan = objPanela.new(display.contentWidth / 4 + 20, display.actualContentHeight - 10)
+	sceneGroup:insert(objPan.getObj())
+	sceneGroup:insert(objPan.getCounter())
+	return objPan
 end
 
 function scene:show( event )
@@ -244,19 +280,23 @@ end
 function whenCarryingObject(event)
 	if (canDestroyCarryingObject()) then
 		cooker:destroyCarriedObject()
+		blinkIngr = true
+		blinkCoz = false
 	elseif(isPan(cooker:getCarryingObject()) and canPutPanIngredientsOnDish(pan, dish)) then
 		dish:setIngredients(pan:getIngredients())
 		pan:setIngredients({})
 		cooker:destroyCarriedObject()
 		pan:hide()
 		pan = createPan()
+		blinkPrat = false
 	elseif (isIngr(cooker:getCarryingObject()) and canPutIngredientOnPan(pan)) then
 		local cObj = cooker:getCarryingObject()
 		cooker:setCarriedObject(nil)
 		pan:adicionarIngrediente(cObj)
+		blinkCoz = false
 	elseif (isDish(cooker:getCarryingObject()) and canPutDishOnBalcony(dish)) then
+		blinkBalc = false
 		cooker:setCarriedObject(nil)
-		-- balcony:deliverDish(dish)
 		dish:setX(9000)
 		dish:setY(9000)
 		dish = Dish:new((display.contentWidth / 4) * 3 + 20, display.actualContentHeight - 10)
@@ -283,13 +323,17 @@ function whenNotCarryingObject(event)
 	if (canPickupIngr(cookerCoordinates, carnes)) then
 		local newIngr = criarCarne(cooker:getX(), cooker:getY())
 		cooker:setCarriedObject(newIngr)
+		blinkIngr, blinkCoz = true, true
 	elseif (canPickupIngr(cookerCoordinates, vegetais)) then
 		local newIngr = criarVegetal(cooker:getX(), cooker:getY())
 		cooker:setCarriedObject(newIngr)
+		blinkIngr, blinkCoz = true, true
 	elseif (canPickupPan(cookerCoordinates, pan)) then
 		cooker:setCarriedObject(pan)
+		blinkPrat = true
 	elseif(canPickupDish(dish)) then
 		cooker:setCarriedObject(dish)
+		blinkBalc = true
 	end
 
 end

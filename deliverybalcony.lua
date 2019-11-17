@@ -34,3 +34,6 @@ function DeliveryBalcony:getY()
     return self.balconyDisplay.y
 end
 
+function DeliveryBalcony:getDisplay()
+    return self.balconyDisplay
+end
