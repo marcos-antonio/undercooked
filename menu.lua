@@ -48,11 +48,10 @@ function scene:create( event )
 	playBtn = widget.newButton{
 		label="New Game",
 		labelColor = { default={0}, over={128} },
-		default="button.png",
 		font="Advertising_Script_Bold.ttf",
 		fontSize=28,
-		over="button-over.png",
 		width=154, height=40,
+		textOnly=true,
 		onRelease = onPlayBtnRelease	-- event listener function
 	}
 	playBtn.x = display.contentCenterX

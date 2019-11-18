@@ -28,6 +28,10 @@ function Dish:setIngredients(_ingredients)
     end
 end
 
+function Dish:getNumberOfCarriedIngredients()
+    return table.getn(self.ingredients)
+end
+
 function Dish:getIngredients()
     return self.ingredients
 end

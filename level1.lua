@@ -56,7 +56,7 @@ function scene:create( event )
 	balcony = DeliveryBalcony:new()
 
 	mesaIngr = display.newImageRect('mesa-ingr.png', 20, 100)
-	mesaIngr.x, mesaIngr.y = display.actualContentWidth - 55, display.actualContentHeight / 2
+	mesaIngr.x, mesaIngr.y = display.actualContentWidth - 108, display.actualContentHeight / 2
 
 	mesaCoz = display.newImageRect("mesa-coz.png", 100, 20)
 	mesaCoz.x, mesaCoz.y = display.contentWidth / 4, display.actualContentHeight - 10
@@ -64,21 +64,21 @@ function scene:create( event )
 	mesaPrat = display.newImageRect("mesa-coz.png", 100, 20)
 	mesaPrat.x, mesaPrat.y = (display.contentWidth / 4) * 3, display.actualContentHeight - 10
 
-	carnes = criarCarne(display.actualContentWidth - 55, (display.actualContentHeight / 2) + 30)
+	carnes = criarCarne(display.actualContentWidth - 108, (display.actualContentHeight / 2) + 30)
 
-	vegetais = criarVegetal(display.actualContentWidth - 55, (display.actualContentHeight / 2) - 30)
+	vegetais = criarVegetal(display.actualContentWidth - 108, (display.actualContentHeight / 2) - 30)
 
 	pan = createPan()
 
 	dish = Dish:new((display.contentWidth / 4) * 3 + 20, display.actualContentHeight - 10)
 
-	local button = display.newCircle(7 * display.contentWidth / 8, 6 * display.contentHeight / 8, display.contentWidth/15)
+	local button = display.newCircle(display.contentCenterX * 2, 6 * display.contentHeight / 8, display.contentWidth/15)
 
-	local stick = joystick.new(display.contentWidth / 8, 6 * display.contentHeight / 8)
+	local stick = joystick.new(0, 6 * display.contentHeight / 8)
 	cooker = spaceship.new(display.contentCenterX, display.contentCenterY, 0.01)
 
 	button:addEventListener( "touch", button_pressed );
-	local countdown = display.newText( 60, 0, 20, native.systemFont, 40 );
+	local countdown = display.newText( 2, 0, 20, native.systemFont, 40 );
 	countdown:setFillColor( 0, 0, 0 )
 
 	score = display.newText( 0, display.contentCenterX * 2, 20, native.systemFont, 40 );
@@ -92,7 +92,7 @@ function scene:create( event )
 			else
 				cd.text = cd.text - 1
 			end
-		end, 60)
+		end, 2)
 	tm.params = {obj = countdown}
 
 	startBlinking()
@@ -288,7 +288,7 @@ function whenCarryingObject(event)
 		cooker:destroyCarriedObject()
 		pan:hide()
 		pan = createPan()
-		blinkPrat = false
+		blinkPrat, blinkIngr = false, true
 	elseif (isIngr(cooker:getCarryingObject()) and canPutIngredientOnPan(pan)) then
 		local cObj = cooker:getCarryingObject()
 		cooker:setCarriedObject(nil)
@@ -299,9 +299,9 @@ function whenCarryingObject(event)
 		cooker:setCarriedObject(nil)
 		dish:setX(9000)
 		dish:setY(9000)
+		increaseScore(dish:getNumberOfCarriedIngredients() * 5)
 		dish = Dish:new((display.contentWidth / 4) * 3 + 20, display.actualContentHeight - 10)
 		sceneGroup:insert( dish:getDisplay() )
-		increaseScore(5)
 	end
 end
 
@@ -331,7 +331,7 @@ function whenNotCarryingObject(event)
 		blinkIngr, blinkCoz = true, true
 	elseif (canPickupPan(cookerCoordinates, pan)) then
 		cooker:setCarriedObject(pan)
-		blinkPrat = true
+		blinkPrat, blinkIngr = true, false
 	elseif(canPickupDish(dish)) then
 		cooker:setCarriedObject(dish)
 		blinkBalc = true

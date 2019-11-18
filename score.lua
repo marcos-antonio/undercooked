@@ -47,18 +47,17 @@ function scene:create( event )
 	local yourScore = display.newText( "Your score", display.contentCenterX, 100, "Advertising_Script_Bold.ttf", 40 );
 	yourScore:setFillColor( 0, 0, 0 )
 
-	local score = display.newText( event.params.score, display.contentCenterX, 150, native.systemFont, 40 );
+	local score = display.newText( 25, display.contentCenterX, 150, native.systemFont, 40 );
 	score:setFillColor( 0, 0, 0 )
 
 	-- create a widget button (which will loads level1.lua on release)
 	playBtn = widget.newButton{
 		label="Menu",
 		labelColor = { default={0}, over={128} },
-		default="button.png",
 		font="Advertising_Script_Bold.ttf",
 		fontSize=28,
-		over="button-over.png",
 		width=154, height=40,
+		textOnly=true,
 		onRelease = onPlayBtnRelease	-- event listener function
 	}
 	playBtn.x = display.contentCenterX
