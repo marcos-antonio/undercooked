@@ -116,7 +116,7 @@ function spaceship:isCarryingObject()
 end
 
 function spaceship:translate( _x, _y, _angle )
-	if (not (player.x + _x > display.actualContentWidth - 40 or player.x + _x < -35)) then
+	if (not (player.x + _x > display.actualContentWidth - 95 or player.x + _x < -35)) then
 		player.x = player.x + _x;
 		if (carriedObject) then
 			if (not not carriedObject.setX) then
@@ -126,7 +126,7 @@ function spaceship:translate( _x, _y, _angle )
 		end
 	end
 	end
-	if (not (player.y + _y > display.actualContentHeight or player.y + _y < 0)) then
+	if (not (player.y + _y > display.actualContentHeight - 30 or player.y + _y < 15)) then
 		player.y = player.y + _y;
 		if (carriedObject) then
 			if (not not carriedObject.setY) then

@@ -29,7 +29,7 @@ end
 function scene:create( event )
 	local sceneGroup = self.view
 
-	local backgroundMusic = audio.loadStream( "menu.mp3" )
+	local backgroundMusic = audio.loadStream( "score.mp3" )
 
 	-- Called when the scene's view does not exist.
 	--
@@ -90,7 +90,7 @@ function scene:hide( event )
 	local phase = event.phase
 
 	if event.phase == "will" then
-		audio.stop( 1 )
+		-- audio.stop( 2 )
 		-- Called when the scene is on screen and is about to move off screen
 		--
 		-- INSERT code here to pause the scene

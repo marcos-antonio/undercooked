@@ -57,7 +57,7 @@ function scene:create( event )
 	balcony = DeliveryBalcony:new()
 
 	mesaIngr = display.newImageRect('mesa-ingr.png', 20, 100)
-	mesaIngr.x, mesaIngr.y = display.actualContentWidth - 108, display.actualContentHeight / 2
+	mesaIngr.x, mesaIngr.y = display.actualContentWidth - 87, display.actualContentHeight / 2
 
 	mesaCoz = display.newImageRect("mesa-coz.png", 100, 20)
 	mesaCoz.x, mesaCoz.y = display.contentWidth / 4, display.actualContentHeight - 10
@@ -65,9 +65,9 @@ function scene:create( event )
 	mesaPrat = display.newImageRect("mesa-coz.png", 100, 20)
 	mesaPrat.x, mesaPrat.y = (display.contentWidth / 4) * 3, display.actualContentHeight - 10
 
-	carnes = criarCarne(display.actualContentWidth - 108, (display.actualContentHeight / 2) + 30)
+	carnes = criarCarne(display.actualContentWidth - 91, (display.actualContentHeight / 2) + 30)
 
-	vegetais = criarVegetal(display.actualContentWidth - 108, (display.actualContentHeight / 2) - 30)
+	vegetais = criarVegetal(display.actualContentWidth - 91, (display.actualContentHeight / 2) - 30)
 
 	pan = createPan()
 
@@ -296,17 +296,13 @@ function whenCarryingObject(event)
 		blinkCoz = false
 	elseif(isPan(cooker:getCarryingObject()) and canPutPanIngredientsOnDish(cooker:getCarryingObject(), dish)) then
 		local isSecond = cooker:getCarryingObject().isSecond()
-		print(cooker:getCarryingObject().isSecond())
-		print(cooker:getCarryingObject():isSecond())
 		dish:setIngredients(cooker:getCarryingObject():getIngredients())
 		cooker:getCarryingObject():setIngredients({})
 		cooker:destroyCarriedObject()
 		if (isSecond) then
-			print('wasseconds')
 			secondPan:hide()
 			secondPan = createSecondPan()
 		else
-			print('wasnot')
 			pan:hide()
 			pan = createPan()
 		end
