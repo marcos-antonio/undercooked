@@ -21,7 +21,7 @@ function panela.new(_x, _y)
     textoTempoCoz = display.newText(tempoCozinhamento, x, y - 30, native.systemFont, 20)
     textoTempoCoz:setFillColor( 0, 0, 0 )
 
-    secondPan = false
+    secondPan = true
 
     ingredientes = {}
 

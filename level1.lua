@@ -10,6 +10,7 @@ local joystick = require("joystick")
 local gameloop = require("gameloop")
 local spaceship = require("spaceship")
 local objPanela = require("panela")
+local objSegundaPanela = require("segundaPanela")
 require("dish")
 require("deliverybalcony")
 
@@ -21,7 +22,7 @@ local physics = require "physics"
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 local cooker, carnes, vegetais
-local pan, dish
+local pan, secondPan, dish
 local mesaIngr, mesaCoz, mesaPrat, balcony, score, sceneGroup
 local blinkIngr, blinkCoz, blinkPrat, blinkBalc = true, false, false, false
 
@@ -70,6 +71,8 @@ function scene:create( event )
 
 	pan = createPan()
 
+	secondPan = createSecondPan()
+
 	dish = Dish:new((display.contentWidth / 4) * 3 + 20, display.actualContentHeight - 10)
 
 	local button = display.newCircle(display.contentCenterX * 2, 6 * display.contentHeight / 8, display.contentWidth/15)
@@ -78,7 +81,7 @@ function scene:create( event )
 	cooker = spaceship.new(display.contentCenterX, display.contentCenterY, 0.01)
 
 	button:addEventListener( "touch", button_pressed );
-	local countdown = display.newText( 2, 0, 20, native.systemFont, 40 );
+	local countdown = display.newText( 60, 0, 20, native.systemFont, 40 );
 	countdown:setFillColor( 0, 0, 0 )
 
 	score = display.newText( 0, display.contentCenterX * 2, 20, native.systemFont, 40 );
@@ -92,7 +95,7 @@ function scene:create( event )
 			else
 				cd.text = cd.text - 1
 			end
-		end, 2)
+		end, 60)
 	tm.params = {obj = countdown}
 
 	startBlinking()
@@ -109,6 +112,8 @@ function scene:create( event )
 	sceneGroup:insert( stick.getShadow() )
 	sceneGroup:insert( pan.getObj() )
 	sceneGroup:insert( pan.getCounter() )
+	sceneGroup:insert( secondPan.getObj() )
+	sceneGroup:insert( secondPan.getCounter() )
 	sceneGroup:insert( button )
 	sceneGroup:insert( carnes )
 	sceneGroup:insert( vegetais )
@@ -174,6 +179,13 @@ end
 
 function createPan(x, y)
 	local objPan = objPanela.new(display.contentWidth / 4 + 20, display.actualContentHeight - 10)
+	sceneGroup:insert(objPan.getObj())
+	sceneGroup:insert(objPan.getCounter())
+	return objPan
+end
+
+function createSecondPan(x, y)
+	local objPan = objSegundaPanela.new(display.contentWidth / 4 - 20, display.actualContentHeight - 10)
 	sceneGroup:insert(objPan.getObj())
 	sceneGroup:insert(objPan.getCounter())
 	return objPan
@@ -282,17 +294,32 @@ function whenCarryingObject(event)
 		cooker:destroyCarriedObject()
 		blinkIngr = true
 		blinkCoz = false
-	elseif(isPan(cooker:getCarryingObject()) and canPutPanIngredientsOnDish(pan, dish)) then
-		dish:setIngredients(pan:getIngredients())
-		pan:setIngredients({})
+	elseif(isPan(cooker:getCarryingObject()) and canPutPanIngredientsOnDish(cooker:getCarryingObject(), dish)) then
+		local isSecond = cooker:getCarryingObject().isSecond()
+		print(cooker:getCarryingObject().isSecond())
+		print(cooker:getCarryingObject():isSecond())
+		dish:setIngredients(cooker:getCarryingObject():getIngredients())
+		cooker:getCarryingObject():setIngredients({})
 		cooker:destroyCarriedObject()
-		pan:hide()
-		pan = createPan()
+		if (isSecond) then
+			print('wasseconds')
+			secondPan:hide()
+			secondPan = createSecondPan()
+		else
+			print('wasnot')
+			pan:hide()
+			pan = createPan()
+		end
 		blinkPrat, blinkIngr = false, true
 	elseif (isIngr(cooker:getCarryingObject()) and canPutIngredientOnPan(pan)) then
 		local cObj = cooker:getCarryingObject()
 		cooker:setCarriedObject(nil)
 		pan:adicionarIngrediente(cObj)
+		blinkCoz = false
+	elseif (isIngr(cooker:getCarryingObject()) and canPutIngredientOnPan(secondPan)) then
+		local cObj = cooker:getCarryingObject()
+		cooker:setCarriedObject(nil)
+		secondPan:adicionarIngrediente(cObj)
 		blinkCoz = false
 	elseif (isDish(cooker:getCarryingObject()) and canPutDishOnBalcony(dish)) then
 		blinkBalc = false
@@ -331,6 +358,9 @@ function whenNotCarryingObject(event)
 		blinkIngr, blinkCoz = true, true
 	elseif (canPickupPan(cookerCoordinates, pan)) then
 		cooker:setCarriedObject(pan)
+		blinkPrat, blinkIngr = true, false
+	elseif (canPickupPan(cookerCoordinates, secondPan)) then
+		cooker:setCarriedObject(secondPan)
 		blinkPrat, blinkIngr = true, false
 	elseif(canPickupDish(dish)) then
 		cooker:setCarriedObject(dish)
